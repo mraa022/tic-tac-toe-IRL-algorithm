@@ -45,11 +45,11 @@ m = []
 def find_Q_table(env,reward,gamma):
     # CHECK HASH FUNC JJFJJFJFJKFDJKJKFSJFDJKFSKJDFKDSKJFSDJKJKFSDJKFJDSJJKSDFJK
     Q = {}
-    epsilon = 0.15
+    epsilon = 0.1
     alpha = 0.1
-    for _ in range(5000):
+    for _ in range(50000):
         env.reset()
-        # print("Iteration ",_)
+        print("Iteration ",_)
         # env.pretty_print()
         i=0
         while not env.game_over():
@@ -79,9 +79,6 @@ def find_Q_table(env,reward,gamma):
             if Q.get(hash_state(s),None) is None:
                 
                 Q[hash_state(s)] = {(0,0):0,(0,1):0,(0,2):0,(1,0):0,(1,1):0,(1,2):0,(2,0):0,(2,1):0,(2,2):0}
-            
-            
-            
             else:
                 # print("not bad")
                 states[hash_state(s)]+=1
@@ -103,35 +100,42 @@ def find_Q_table(env,reward,gamma):
 
     return Q    
 
-# def reward(s):
-#     # if(s.game_over()):
-#     #     s.pretty_print()
-#     # print(s.evaluate())
-#     return s.evaluate()
-
-def rl_solver(board,reward):
-    b = Board(10,0)
-    Q = find_Q_table(b,reward,0.9)
-    return policy(board,Q,0)
+def reward(s):
+    # w = np.array([-0.23552458,  0.10318106,  0.25092175,  0.15571041,  0.23992299,  0.16506025,
+#   0.03693527, -0.00483777, -0.00431269])
+    w = np.array([-0.01502647, -0.02514172,  0.04525434, -0.02511753,  0.0527855,  -0.04476556,
+  0.02843316,  0.00810395, -0.02671182])
+    # if(s.game_over()):
+    #     s.pretty_print()
+    # print(s.evaluate())
+    return np.matmul(w,s._matrix.flatten())
+# Q = find_Q_table(Board(10,0))
+# p = lambda s: policy(Board(10,0),Q,0)
+# def rl_solver(board,reward):
+#     b = Board(10,0)
+#     Q = find_Q_table(b,reward,0.9)
+#     return policy(board,Q,0)
 
 # trajectories = generate_trajectories(p)
 
 
-# def matrix_to_symbols(b):
+def matrix_to_symbols(b):
 
-#     for i in range(len(b)):
-#         row = []
-#         for j in range(len(b)):
-#             if b[i][j] == 1:
-#                 row.append('x')
-#             elif b[i][j] == 2:
-#                 row.append('o')
-#             else:
-#                 row.append('_')
-#         print(row)
-
-# plt.plot(f,m)
-# plt.show()
+    for i in range(len(b)):
+        row = []
+        for j in range(len(b)):
+            if b[i][j] == 1:
+                row.append('x')
+            elif b[i][j] == 2:
+                row.append('o')
+            else:
+                row.append('_')
+        print(row)
+q_table = find_Q_table(Board(10,0),reward,0.9)
+plt.plot(f,m)
+plt.show()
+p = lambda s,symbol:policy(s,q_table,0)
+# trajectories = generate_trajectories(p)
 # for episode in trajectories:
 #     for b in episode:
 #         k = Board(10,0)
@@ -140,7 +144,20 @@ def rl_solver(board,reward):
 #         matrix_to_symbols(b[0])
 #         # print(h(b[0]))
 #         # print(b[0])
-#         print(hash_state(k),states.get(hash_state(k)),b[1],Q.get(hash_state(k)))
+#         # print(hash_state(k),states.get(hash_state(k)),b[1],Q.get(hash_state(k)))
 #         print()
 #     print('----------------')
-# print(states)
+# # print(states)
+# print(q_table)
+
+b = Board(10,0)
+while True:
+    
+    bot_action  = p(b,'x')
+    b.place(bot_action,'x')
+    b.pretty_print()
+    user = input("ENTER ROW COL: ").split(',')
+    row,col = int(user[0]),int(user[1])
+    b.place((row,col),'o')
+    if b.game_over():
+        b.reset()

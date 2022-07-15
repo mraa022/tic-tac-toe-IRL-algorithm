@@ -10,6 +10,7 @@ from IRL.rl_solver import find_Q_table
 from IRL.rl_solver import policy as found_policy
 from Game.game import Board
 import Game
+import time 
 def phi(state):
     if type(state)==Game.game.Board:
         return state._matrix.flatten()
@@ -41,12 +42,15 @@ def recover_r(phi,gamma):
     none_expert_feature_expectations = [mu_o]
     mu_bars = []
     i+=1
-    for i in range(1,101):
+    w = np.zeros((9,))
+    t = 1000
+    while t>0.01:
         if i==1:
             mu_bar_o = deepcopy(mu_o)
             # mu_bars.append(np.zeros(9,))
             mu_bars.append(mu_bar_o)
             w = mu_e - mu_o
+
         else:
             # mu_bar_prev = mu_bars[-1]
             mu_bar_prev_prev = mu_bars[i-2]
@@ -65,6 +69,7 @@ def recover_r(phi,gamma):
             w = mu_e - mu_bar_prev
             mu_bars.append(mu_bar_prev)
         reward_function = lambda s: np.matmul(w,phi(s))
+
         # print(w)
         Q_table = find_Q_table(Board(10,0),reward_function,gamma)
         new_policy = new_policy = lambda s,symbol:found_policy(s,deepcopy(Q_table),epsilon) 
@@ -75,15 +80,18 @@ def recover_r(phi,gamma):
         none_expert_feature_expectations.append(feature_expectations(generate_trajectories(new_policy),phi,gamma))
             
         t = np.linalg.norm(mu_e-mu_bars[-1])
-        if t<0.5:
+        if t<0.1:
             break
         print(t)
+        i+=1
     return w,policies[-1]
 # def policy(state,symbol):
 #     possible_choices = []
 #     for x in 
 w,policy  = recover_r(phi,0.9)
-
+f = open("w.txt", "w")
+f.write(str(w))
+f.close()
 trajectories = generate_trajectories(policy)
 
 
@@ -112,4 +120,4 @@ for episode in trajectories:
         # print(b[0])
         print()
     print('----------------')
-# print(states)
+# # print(states)
