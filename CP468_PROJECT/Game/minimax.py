@@ -1,4 +1,10 @@
+import random
 from Game.global_vars import *
+
+'''
+Part of the code from this section was borrowed from https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-3-tic-tac-toe-ai-finding-optimal-move/
+
+'''
 def minimax(board, depth, isMax) :
     
    
@@ -93,4 +99,79 @@ def findBestMove(board,player) :
                     bestMove = (i,j)
                     bestVal = moveVal
  
+    return bestMove
+
+def findLastBestMove(board,player):
+    isMax = IS_MAX[player]
+   
+    bestVal = float('-inf') if isMax else float('inf')
+    
+    bestMove = (0, 0)
+ 
+    # Traverse all cells, evaluate minimax function for
+    # all empty cells. And return the cell with optimal
+    # value.
+    best_moves = [(0,0)]
+    for i in range(SIZE) :    
+        for j in range(SIZE) :
+         
+            # Check if cell is empty
+            if board.is_empty((i,j)):
+             
+                # Make the move
+                board.place((i,j),player)
+ 
+                # compute evaluation function for this
+                # move.
+                moveVal = minimax(board, 0, not isMax)
+                # Undo the move
+                board.undo_move((i,j))
+
+                if (moveVal >= bestVal) and isMax :   
+                    bestMove = (i, j)
+                    bestVal = moveVal
+                elif (moveVal<=bestVal) and not isMax:
+                    bestMove = (i,j)
+                    bestVal = moveVal
+    return bestMove
+
+def findRandomBestMove(board,player):
+    isMax = IS_MAX[player]
+   
+    bestVal = float('-inf') if isMax else float('inf')
+    
+    bestMove = (0, 0)
+    moves = [(0,0)]
+    # Traverse all cells, evaluate minimax function for
+    # all empty cells. And return the cell with optimal
+    # value.
+    best_moves = [(0,0)]
+    for i in range(SIZE) :    
+        for j in range(SIZE) :
+         
+            # Check if cell is empty
+            if board.is_empty((i,j)):
+             
+                # Make the move
+                board.place((i,j),player)
+ 
+                # compute evaluation function for this
+                # move.
+                moveVal = minimax(board, 0, not isMax)
+                # Undo the move
+                board.undo_move((i,j))
+
+                if (moveVal >= bestVal) and isMax :
+                    if moveVal==bestVal:
+                        best_moves.append((i,j))
+                    else:
+                        best_moves = [(i,j)]   
+                    bestVal = moveVal
+                elif (moveVal<=bestVal) and not isMax:
+                    if moveVal==bestVal:
+                        best_moves.append((i,j))
+                    else:
+                        best_moves = [(i,j)]
+                    bestVal = moveVal
+    return random.choice(best_moves)
     return bestMove

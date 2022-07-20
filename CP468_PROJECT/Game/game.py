@@ -1,4 +1,3 @@
-from re import S, X
 import numpy as np
 
 ENCODE_SYMBOL = {'x':1,'o':-1,'_':0}
@@ -30,8 +29,7 @@ class Board():
             self._moves_left-=1
            
     def who_won(self):
-        if self._moves_left==0:
-            return 'default'
+        
         for row in range(3):
             
             if self.board[row][0]==self.board[row][1]==self.board[row][2]:

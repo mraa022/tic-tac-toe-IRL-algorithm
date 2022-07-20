@@ -36,20 +36,6 @@ classifier.add(Dense(9, activation='relu', input_dim=9))
 classifier.add(Dense(4, activation='relu'))
 #Output Layer
 classifier.add(Dense(9, activation='softmax'))
-print("YO")
 classifier.compile(optimizer ='adam',loss='categorical_crossentropy', metrics =['accuracy'])
-print("HI")
 classifier.fit(features,labels, batch_size=10, epochs=5000)
 
-from Game.game import Board
-from Game.minimax import findBestMove
-
-b = Board(10,0)
-b.place((0,0),'x')
-b.place((1,1),'o')
-b.place((1,0),'x')
-b.place((0,1),'o')
-b._matrix=b._matrix.reshape((1,9)) 
-# print(b._matrix.flatten().shape)
-# print(features[0],features[0].shape)
-print(classifier.predict(b._matrix))
