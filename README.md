@@ -7,6 +7,9 @@ the AI algorithm required a sequence of state action pairs of 9 tic-tac-toe game
 ## instlation and execution steps
 simple download this repo and navigate to the **Testing** folder, and from there open the ***irl.py***  file. from there simple run that file, it will train the model quickly and you can play against different version of it by uncommenting the one you want (there are blocks of code denoting different agents trainined in different ways, just uncomment the one you want to play against).
 
+## packages 
+the project uses numpy, matplotlib (only ones that need to be installed by pip if they aren't already there). so please make sure they are installed.
+
 ## Performance parameters 
 the performance parameters used in this project where wether the agent tied with an optimal agent or not. that is, the "win-rate/accuracy/etc" was measured by how often it tied against an expert opponent. Since you can't possible win against an expert/optimal/minimax opponent, the best you can do is tie with it. 
 
